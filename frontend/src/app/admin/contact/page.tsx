@@ -1,0 +1,20 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import AuthGate from "@/components/auth/AuthGate";
+
+type Status = "NEW" | "IN_PROGRESS" | "RESOLVED" | "SPAM";
+type Item = { id: number; name: string; email: string; subject: string; status: Status; createdAt: string };
+type Detail = Item & { message: string; updatedAt: string };
+type PageData = { content: Item[]; page: number; size: number; totalElements: number; totalPages: number };
+
+function Inbox() {
+  const [data, setData] = useState<PageData | null>(null); const [detail, setDetail] = useState<Detail | null>(null); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  useEffect(() => { fetch("/api/admin/contact-messages", { credentials: "same-origin", cache: "no-store" }).then((response) => { if (!response.ok) throw new Error("Messages could not be loaded."); return response.json() as Promise<PageData>; }).then(setData).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Messages could not be loaded.")); }, []);
+  async function open(id: number) { setError(""); try { const response = await fetch(`/api/admin/contact-messages/${id}`, { credentials: "same-origin" }); if (!response.ok) throw new Error("Message could not be loaded."); setDetail(await response.json()); } catch (reason) { setError(reason instanceof Error ? reason.message : "Message could not be loaded."); } }
+  async function updateStatus(status: Status) { if (!detail) return; setBusy(true); setError(""); try { const response = await fetch(`/api/admin/contact-messages/${detail.id}/status`, { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ status }) }); const next = await response.json(); if (!response.ok) throw new Error(next.message || "Status could not be updated."); setDetail(next); setData((current) => current ? { ...current, content: current.content.map((item) => item.id === next.id ? { ...item, status: next.status } : item) } : current); } catch (reason) { setError(reason instanceof Error ? reason.message : "Status could not be updated."); } finally { setBusy(false); } }
+  return <div className="min-h-screen"><main className="admin-contact-page"><header className="admin-contact-heading"><Link href="/" className="site-brand">SEA OF TALES</Link><p className="home-eyebrow">Administration</p><h1>Contact Inbox</h1><p>Review enquiries submitted through the public contact form.</p></header>{error && <p className="contact-message contact-message--error" role="alert">{error}</p>}<div className="admin-contact-layout"><section className="admin-contact-list" aria-label="Contact messages"><h2>Messages</h2>{!data && !error && <p>Loading messages…</p>}{data?.content.length === 0 && <p>No contact messages yet.</p>}{data?.content.map((item) => <button className={`admin-contact-item${detail?.id === item.id ? " admin-contact-item--active" : ""}`} key={item.id} type="button" onClick={() => void open(item.id)}><strong>{item.subject}</strong><span>{item.name} · {item.email}</span><small>{item.status} · {new Date(item.createdAt).toLocaleString()}</small></button>)}</section><section className="admin-contact-detail" aria-live="polite">{detail ? <><h2>{detail.subject}</h2><p className="admin-contact-meta">From {detail.name} · <a href={`mailto:${detail.email}`}>{detail.email}</a><br />Submitted {new Date(detail.createdAt).toLocaleString()}</p><div className="admin-contact-body">{detail.message}</div><label className="admin-contact-status">Status<select disabled={busy} value={detail.status} onChange={(event) => void updateStatus(event.target.value as Status)}><option value="NEW">New</option><option value="IN_PROGRESS">In progress</option><option value="RESOLVED">Resolved</option><option value="SPAM">Spam</option></select></label></> : <p>Select a message to view its contents.</p>}</section></div></main></div>;
+}
+
+export default function AdminContactPage() { return <AuthGate mode="admin"><Inbox /></AuthGate>; }
