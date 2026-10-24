@@ -9,6 +9,7 @@ import SiteFooter from "@/components/site/SiteFooter";
 import SiteNavbar from "@/components/site/SiteNavbar";
 import { useAuth } from "@/components/auth/AuthProvider";
 import NovelDescription from "@/components/NovelDescription";
+import ReactionSection from "@/components/reactions/ReactionSection";
 
 type Chapter = { id: number; novelId: number; chapterNumber: string; title: string; updatedAt: string };
 type NovelPageData = {
@@ -109,6 +110,7 @@ export default function NovelPage() {
                 </div>
               )}
             </section>
+            <ReactionSection targetType="novel" targetId={data.novel.id} />
           </>
         )}
       </main>

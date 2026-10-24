@@ -17,6 +17,16 @@ import java.util.List;
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 
     @Query("""
+            SELECT CASE WHEN COUNT(chapter) > 0 THEN true ELSE false END
+            FROM Chapter chapter
+            JOIN Novel novel ON novel.id = chapter.novelId
+            JOIN ChapterEdition edition ON edition.chapterId = chapter.id
+            WHERE chapter.id = :chapterId
+                AND chapter.state = com.seaoftales.content.enums.ChapterState.EDITED
+            """)
+    boolean existsPublicChapterById(@Param("chapterId") Long chapterId);
+
+    @Query("""
             SELECT new com.seaoftales.content.dto.PublicUpdateRow(
                 c.id, c.novelId, n.title, n.coverImage, c.chapterNumber,
                 CASE WHEN c.state = com.seaoftales.content.enums.ChapterState.EDITED

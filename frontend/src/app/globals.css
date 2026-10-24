@@ -232,6 +232,11 @@ html {
   background: var(--updates-background);
 }
 
+:root[data-theme="night"] .home-section--popular,
+:root[data-theme="night"] .home-section--updates {
+  background: var(--page-background);
+}
+
 .novels-section {
   min-height: 58vh;
   background-color: #ffffff;
@@ -1070,7 +1075,8 @@ a:hover .novel-cover__image {
   }
 }
 
-.reader-page { width: min(calc(100% - 2.5rem), 980px); min-height: 70vh; margin: 0 auto; padding: 34px 38px 80px; box-sizing: border-box; background: var(--page-background); color: var(--page-ink); }
+.reader-page { width: min(calc(100% - 2.5rem), 980px); min-height: 70vh; margin: 0 auto; padding: 34px 38px 80px; box-sizing: border-box; background: transparent; color: var(--page-ink); }
+.reader-content-section { width: 100%; margin: 0 auto; border: 1px solid var(--page-border); border-radius: 8px; padding: 30px 38px; box-sizing: border-box; background: var(--page-background); }
 .reader-heading { padding: 12px 0 26px; }
 .reader-breadcrumb { display: flex; flex-wrap: wrap; gap: 8px; color: var(--page-muted); font-size: 12px; }
 .reader-breadcrumb a { color: var(--page-ink); text-decoration: none; }
@@ -1084,6 +1090,9 @@ a:hover .novel-cover__image {
 .reader-size-controls button:hover:not(:disabled), .reader-navigation a:hover { border-color: var(--page-accent); color: var(--page-accent); }
 .reader-size-controls button:disabled { cursor: not-allowed; opacity: .45; }
 .reader-navigation__disabled { color: var(--page-muted); opacity: .55; }
+.reader-navigation { display: grid; width: max-content; grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr); align-items: center; gap: 8px; white-space: nowrap; }
+.reader-navigation > :first-child, .reader-navigation > :last-child { justify-self: stretch; }
+.reader-navigation > :nth-child(2) { justify-self: center; }
 .reader-content { width: min(100%, 720px); margin: 42px auto; color: var(--page-ink); font-size: 100%; line-height: 1.9; overflow-wrap: anywhere; }
 .reader-content p { margin: 0 0 1.5em; }
 .reader-content p:last-child { margin-bottom: 0; }
@@ -1201,9 +1210,15 @@ a:hover .novel-cover__image {
 
 @media (max-width: 700px) {
   .reader-page { width: min(calc(100% - 1.5rem), 980px); padding: 22px 22px 52px; }
+  .reader-content-section { padding: 22px; }
   .reader-heading { padding-bottom: 20px; }
-  .reader-controls { align-items: stretch; flex-direction: column; }
-  .reader-size-controls, .reader-navigation { justify-content: center; }
+  .reader-controls { align-items: center; flex-direction: column; gap: 12px; }
+  .reader-size-controls { display: grid; width: max-content; max-width: 100%; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); justify-items: center; gap: 4px; white-space: nowrap; }
+  .reader-navigation { display: grid; width: max-content; max-width: 100%; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 4px; white-space: nowrap; }
+  .reader-navigation > :first-child { justify-self: stretch; }
+  .reader-navigation > :nth-child(2) { justify-self: center; }
+  .reader-navigation > :last-child { justify-self: stretch; }
+  .reader-size-controls button, .reader-navigation a, .reader-navigation__disabled { flex: 0 0 auto; padding-right: 10px; padding-left: 10px; }
   .reader-content { margin: 30px auto; line-height: 1.8; }
 }
 
@@ -1267,6 +1282,12 @@ a:hover .novel-cover__image {
   background: var(--page-card);
 }
 
+:root[data-theme="night"] .novel-hero,
+:root[data-theme="night"] .novel-chapters,
+:root[data-theme="night"] .reaction-section {
+  background: var(--page-background);
+}
+
 .novel-hero {
   display: grid;
   grid-template-columns: minmax(190px, 280px) minmax(0, 1fr);
@@ -1303,6 +1324,32 @@ a:hover .novel-cover__image {
 .novel-page__state a { color: var(--page-ink); font-weight: 700; }
 .novel-page__empty { margin: 24px 0 0; }
 
+.reaction-section {
+  width: min(100%, 680px);
+  margin: 30px auto 34px;
+  border: 1px solid var(--page-border);
+  border-radius: 6px;
+  background: var(--page-card);
+  color: var(--page-ink);
+  padding: 18px 20px 15px;
+}
+.reaction-section__heading { text-align: center; }
+.reaction-section__heading h2 { margin: 0; color: var(--page-ink); font-size: 15px; font-weight: 650; line-height: 1.35; }
+.reaction-section__heading p { margin: 4px 0 0; color: var(--page-muted); font-size: 11px; }
+.reaction-section__choices { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.reaction-choice { position: relative; display: flex; min-width: 0; min-height: 78px; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid var(--page-border); border-radius: 5px; padding: 8px 4px 6px; background: transparent; color: var(--page-ink); cursor: pointer; font: inherit; transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease; }
+.reaction-choice:hover:not(:disabled) { border-color: var(--page-accent); color: var(--page-accent); }
+.reaction-choice:focus-visible { outline: 2px solid var(--page-accent); outline-offset: 2px; }
+.reaction-choice--selected { border-color: var(--page-accent); background: color-mix(in srgb, var(--page-accent) 12%, var(--page-card)); color: var(--page-accent); box-shadow: inset 0 0 0 1px var(--page-accent); }
+.reaction-choice:disabled { cursor: not-allowed; opacity: .68; }
+.reaction-choice__emoji { font-size: 23px; line-height: 1; }
+.reaction-choice__label { color: var(--page-ink); font-size: 10px; line-height: 1.2; }
+.reaction-choice__count { color: var(--page-muted); font-size: 10px; line-height: 1.2; }
+.reaction-choice__selected-mark { position: absolute; top: 4px; right: 6px; color: var(--page-accent); font-size: 11px; font-weight: 800; }
+.reaction-section__note { margin: 10px 0 0; color: var(--page-muted); font-size: 10px; line-height: 1.45; text-align: center; }
+.reaction-section__note a { color: var(--page-ink); text-decoration: underline; text-underline-offset: 3px; }
+.reaction-section__note a:hover { color: var(--page-accent); }
+
 @media (max-width: 700px) {
   .novel-page { width: min(calc(100% - 1.5rem), 1120px); padding: 22px 0 52px; }
   .novel-hero { grid-template-columns: 1fr; gap: 24px; padding: 22px; }
@@ -1313,4 +1360,7 @@ a:hover .novel-cover__image {
   .novel-chapters { padding: 24px 22px; }
   .novel-chapters__heading { text-align: center; }
   .novel-chapter-row { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .reaction-section { margin-top: 24px; padding: 16px 14px 13px; }
+  .reaction-section__choices { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .reaction-choice { min-height: 74px; }
 }

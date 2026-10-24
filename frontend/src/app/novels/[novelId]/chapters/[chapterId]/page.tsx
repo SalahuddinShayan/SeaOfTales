@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import SiteFooter from "@/components/site/SiteFooter";
 import SiteNavbar from "@/components/site/SiteNavbar";
+import ReactionSection from "@/components/reactions/ReactionSection";
 
 type ReaderData = {
   novel: { id: number; title: string };
@@ -71,15 +72,18 @@ export default function ChapterReaderPage() {
         {(notFound || error) && <section className="novel-page__state" role="alert"><h1>{notFound ? "Chapter not found" : "Chapter could not be loaded"}</h1><p>{notFound ? "This chapter is not currently available to read." : "Please try again later."}</p><Link href={`/novels/${novelId}`}>Return to novel</Link></section>}
         {data && (
           <>
-            <header className="reader-heading">
-              <nav className="reader-breadcrumb" aria-label="Breadcrumb"><Link href="/">Sea of Tales</Link><span>/</span><Link href={`/novels/${novelId}`}>{displayTitle(data.novel.title)}</Link><span>/</span><span>Chapter {data.chapter.chapterNumber}</span></nav>
-              <p className="home-eyebrow">Now reading</p>
-              <h1>{displayTitle(data.novel.title)} — Chapter {data.chapter.chapterNumber}</h1>
-              <h2>{displayTitle(data.chapter.title)}</h2>
-            </header>
-            <ReaderControls data={data} textSize={textSize} setTextSize={setTextSize} />
-            <article className="reader-content" style={{ fontSize: `${textSize}%` }} dangerouslySetInnerHTML={{ __html: data.chapter.content }} />
-            <ReaderControls data={data} textSize={textSize} setTextSize={setTextSize} />
+            <section className="reader-content-section" aria-label="Chapter content">
+              <header className="reader-heading">
+                <nav className="reader-breadcrumb" aria-label="Breadcrumb"><Link href="/">Sea of Tales</Link><span>/</span><Link href={`/novels/${novelId}`}>{displayTitle(data.novel.title)}</Link><span>/</span><span>Chapter {data.chapter.chapterNumber}</span></nav>
+                <p className="home-eyebrow">Now reading</p>
+                <h1>{displayTitle(data.novel.title)} — Chapter {data.chapter.chapterNumber}</h1>
+                <h2>{displayTitle(data.chapter.title)}</h2>
+              </header>
+              <ReaderControls data={data} textSize={textSize} setTextSize={setTextSize} />
+              <article className="reader-content" style={{ fontSize: `${textSize}%` }} dangerouslySetInnerHTML={{ __html: data.chapter.content }} />
+              <ReaderControls data={data} textSize={textSize} setTextSize={setTextSize} />
+            </section>
+            <ReactionSection targetType="chapter" targetId={data.chapter.id} />
           </>
         )}
       </main>
