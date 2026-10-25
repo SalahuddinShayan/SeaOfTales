@@ -10,6 +10,7 @@ import SiteNavbar from "@/components/site/SiteNavbar";
 import { useAuth } from "@/components/auth/AuthProvider";
 import NovelDescription from "@/components/NovelDescription";
 import ReactionSection from "@/components/reactions/ReactionSection";
+import CommentSection from "@/components/comments/CommentSection";
 
 type Chapter = { id: number; novelId: number; chapterNumber: string; title: string; updatedAt: string };
 type NovelPageData = {
@@ -111,6 +112,7 @@ export default function NovelPage() {
               )}
             </section>
             <ReactionSection targetType="novel" targetId={data.novel.id} />
+            <CommentSection key={`novel:${data.novel.id}`} targetType="novel" targetId={data.novel.id} />
           </>
         )}
       </main>

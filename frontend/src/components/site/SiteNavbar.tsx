@@ -57,7 +57,7 @@ export default function SiteNavbar() {
             {status === "authenticated" && (
               <>
                 <Link className="site-auth-link" href="/library">Library</Link>
-                {user?.role === "ROLE_ADMIN" && <><Link className="site-auth-link" href="/admin/invitations">Admin</Link><Link className="site-auth-link" href="/admin/contact">Inbox</Link></>}
+                {user?.role === "ROLE_ADMIN" && <><Link className="site-auth-link" href="/admin/invitations">Admin</Link><Link className="site-auth-link" href="/admin/contact">Inbox</Link><Link className="site-auth-link" href="/admin/comment-reports">Reports</Link></>}
                 {user && <Link className="site-username" href={user.role === "ROLE_AUTHOR" ? `/authors/${encodeURIComponent(user.username)}` : `/profiles/${encodeURIComponent(user.username)}`}>{user.username}</Link>}
                 <button className="site-auth-link" type="button" onClick={logout}>Logout</button>
               </>

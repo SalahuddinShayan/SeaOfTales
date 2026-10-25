@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import SiteFooter from "@/components/site/SiteFooter";
 import SiteNavbar from "@/components/site/SiteNavbar";
 import ReactionSection from "@/components/reactions/ReactionSection";
+import CommentSection from "@/components/comments/CommentSection";
 
 type ReaderData = {
   novel: { id: number; title: string };
@@ -84,6 +85,7 @@ export default function ChapterReaderPage() {
               <ReaderControls data={data} textSize={textSize} setTextSize={setTextSize} />
             </section>
             <ReactionSection targetType="chapter" targetId={data.chapter.id} />
+            <CommentSection key={`chapter:${data.chapter.id}`} targetType="chapter" targetId={data.chapter.id} />
           </>
         )}
       </main>

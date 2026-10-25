@@ -1,6 +1,7 @@
 package com.seaoftales.content.repository;
 
 import com.seaoftales.content.entity.Chapter;
+import com.seaoftales.content.dto.PublicActivityChapterRow;
 import com.seaoftales.content.dto.HomeChapterRow;
 import com.seaoftales.content.dto.PublicUpdateRow;
 import com.seaoftales.content.dto.PublicNovelChapterRow;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
@@ -25,6 +27,17 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
                 AND chapter.state = com.seaoftales.content.enums.ChapterState.EDITED
             """)
     boolean existsPublicChapterById(@Param("chapterId") Long chapterId);
+
+    @Query("""
+            SELECT new com.seaoftales.content.dto.PublicActivityChapterRow(
+                chapter.id, novel.id, novel.title, chapter.chapterNumber, edition.title)
+            FROM Chapter chapter
+            JOIN Novel novel ON novel.id = chapter.novelId
+            JOIN ChapterEdition edition ON edition.chapterId = chapter.id
+            WHERE chapter.id IN :chapterIds
+              AND chapter.state = com.seaoftales.content.enums.ChapterState.EDITED
+            """)
+    List<PublicActivityChapterRow> findPublicActivityRowsByChapterIdIn(@Param("chapterIds") Collection<Long> chapterIds);
 
     @Query("""
             SELECT new com.seaoftales.content.dto.PublicUpdateRow(

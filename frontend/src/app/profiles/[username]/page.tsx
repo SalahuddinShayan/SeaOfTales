@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import SiteFooter from "@/components/site/SiteFooter";
 import SiteNavbar from "@/components/site/SiteNavbar";
+import ProfileActivitySection from "@/components/profiles/ProfileActivitySection";
 
 type Profile = { username: string; role: string; profilePicture: string | null };
 
@@ -34,15 +35,15 @@ export default function PublicProfilePage() {
   }, [username]);
 
   const owner = status === "authenticated" && profile !== null && user?.username.toLowerCase() === profile.username.toLowerCase();
-  return <div className="min-h-screen"><SiteNavbar /><main className="home-section home-section--popular profile-page">
+  return <div className="min-h-screen"><SiteNavbar /><main className="home-section profile-page">
     {state === "loading" && <p className="novels-feedback" role="status">Loading profile…</p>}
     {state === "error" && <p className="novels-feedback" role="alert">This profile could not be loaded.</p>}
     {state === "missing" && <section className="novels-feedback" role="status"><h1>Profile not found</h1><p>This user profile does not exist.</p><Link href="/">Return home</Link></section>}
-    {state === "loaded" && profile && <section className="profile-card">
+    {state === "loaded" && profile && <><section className="profile-card">
       <div className="profile-card__portrait">{profile.profilePicture ? <Image src={profile.profilePicture} alt={`${profile.username} profile picture`} width={128} height={128} unoptimized /> : <span aria-hidden="true">{profile.username.slice(0, 1).toUpperCase()}</span>}</div>
       <p className="home-eyebrow">{label(profile.role) || "Profile"}</p><h1>{profile.username}</h1>
       {label(profile.role) && <p className="profile-card__role">{label(profile.role)}</p>}
       {owner && <nav className="profile-card__actions" aria-label="Profile actions"><Link href="/account/profile">Edit Profile</Link><Link href="/account/password">Change Password</Link></nav>}
-    </section>}
+    </section><ProfileActivitySection key={profile.username} username={profile.username} /></>}
   </main><SiteFooter /></div>;
 }
